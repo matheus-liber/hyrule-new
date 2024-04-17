@@ -52,7 +52,9 @@ class EntryCard extends StatelessWidget {
                     Flexible(
                       flex: 1,
                       fit: FlexFit.tight,
-                      child: Container(
+                      child: Hero(
+                        tag: "${entry.name}-hero",
+                        child: Container(
                         margin: const EdgeInsets.symmetric(
                           vertical: 16.0,
                           horizontal: 8.0,
@@ -64,7 +66,7 @@ class EntryCard extends StatelessWidget {
                               fit: BoxFit.cover,
                             )
                         ),
-                      ),
+                      )),
                     ),
                     Flexible(
                       flex: 2,
