@@ -15,24 +15,32 @@ class Category extends StatefulWidget {
   State<Category> createState() => _CategoryState();
 }
 
-class _CategoryState extends State<Category> with SingleTickerProviderStateMixin{
+class _CategoryState extends State<Category> with TickerProviderStateMixin {
   final ApiController apiController = ApiController();
 
-  late AnimationController _animationController;
+  late AnimationController _scaleAnimationController;
+  late AnimationController _imageColorAnimationController;
 
   @override
-  void initState(){
-    _animationController = AnimationController(
-      vsync: this, 
-      duration: const Duration(seconds: 1),
-      lowerBound: 0.8,
-      upperBound: 1
-    );
+  void initState() {
+    _scaleAnimationController = AnimationController(
+        vsync: this,
+        duration: const Duration(seconds: 1),
+        lowerBound: 0.8,
+        upperBound: 1);
 
-    if (widget.isHighLight){
-      _animationController.repeat(reverse: true);
+    _imageColorAnimationController = AnimationController(
+        vsync: this,
+        duration: Duration(seconds: 1),
+        lowerBound: 0,
+        upperBound: 1);
+
+    if (widget.isHighLight) {
+      _scaleAnimationController.repeat(reverse: true);
+      _imageColorAnimationController.repeat(reverse: true);
     } else {
-      _animationController.animateTo(1);
+      _scaleAnimationController.animateTo(1);
+      _imageColorAnimationController.animateTo(0);
     }
   }
 
@@ -66,15 +74,21 @@ class _CategoryState extends State<Category> with SingleTickerProviderStateMixin
                         blurStyle: BlurStyle.outer),
                   ]),
               child: ScaleTransition(
-                alignment: Alignment.center,
-                scale: _animationController,
-                child: Center(
-                  child: Image.asset(
-                    "$imagePath${widget.category}.png",
-                    fit: BoxFit.fitHeight,
-                  ),
-                ),
-              ),
+                  alignment: Alignment.center,
+                  scale: _scaleAnimationController,
+                  child: AnimatedBuilder(
+                    animation: _imageColorAnimationController,
+                    builder: (context, child) {
+                      return Center(
+                        child: Image.asset(
+                          "$imagePath${widget.category}.png",
+                          fit: BoxFit.fitHeight,
+                          color: Color.fromARGB(255, 255, 255,
+                              (255 * (_imageColorAnimationController.value - 1).abs()).floor()),
+                        ),
+                      );
+                    },
+                  )),
             ),
           ),
         ),
@@ -92,7 +106,8 @@ class _CategoryState extends State<Category> with SingleTickerProviderStateMixin
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _scaleAnimationController.dispose();
+    _imageColorAnimationController.dispose();
     super.dispose();
   }
 }
