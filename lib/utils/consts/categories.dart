@@ -1,4 +1,4 @@
-const String imagePath = "assets/images/";
+const String iconPath = "assets/images/";
 
 const Map<String, String> categories = {
   'creatures': 'Creatures',
