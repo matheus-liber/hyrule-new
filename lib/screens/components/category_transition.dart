@@ -20,11 +20,14 @@ class _CategoryTransitionWidgetState extends State<CategoryTransitionWidget>
     with TickerProviderStateMixin {
   late AnimationController _scaleAnimationController;
   late AnimationController _imageColorAnimationController;
+  late Animation<double> _scaleCurvedAnimation;
 
   @override
   void initState() {
     _scaleAnimationController = AnimationController(
         vsync: this, duration: widget.duration, lowerBound: 0.8, upperBound: 1);
+
+    _scaleCurvedAnimation = CurvedAnimation(parent: _scaleAnimationController, curve: Curves.slowMiddle);
 
     _imageColorAnimationController = AnimationController(
         vsync: this, duration: widget.duration, lowerBound: 0, upperBound: 1);
@@ -44,7 +47,7 @@ class _CategoryTransitionWidgetState extends State<CategoryTransitionWidget>
   Widget build(BuildContext context) {
     return CategoryTransition(
       imageColorAnimationController: _imageColorAnimationController,
-      scaleAnimationController: _scaleAnimationController,
+      scaleAnimationController: _scaleCurvedAnimation,
       imagePath: widget.imagePath,
     );
   }
